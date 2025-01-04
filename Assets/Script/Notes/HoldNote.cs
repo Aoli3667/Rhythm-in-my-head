@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HoldNote : Note
 {
-    [SerializeField] private GameObject holdHead;
+    [SerializeField] public GameObject holdHead;
     [SerializeField] private GameObject holdTail;
     [SerializeField] private SpriteRenderer holdBody;
     private GameObject judgeObj;
@@ -39,6 +39,11 @@ public class HoldNote : Note
         Move();
     }
 
+    public void GetBack()
+    {
+        holdHead.transform.SetParent(this.gameObject.transform);
+    }
+
     public void HeadClick()
     {
         holdHead.transform.SetParent(judgeObj.transform);
@@ -47,7 +52,7 @@ public class HoldNote : Note
 
     public void ShowHoldTail()
     {
-        holdBody.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+        holdBody.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
         holdTail.SetActive(true);
         holdTail.transform.position = this.spawnPos.position;
         Debug.Log("tail");
@@ -75,6 +80,7 @@ public class HoldNote : Note
             if(holdTail.transform.position.x < judgePos.x)
             {
                 Destroy(this.gameObject);
+                Destroy(holdHead);
             }
         }
     }

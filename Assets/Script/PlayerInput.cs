@@ -18,6 +18,13 @@ public class PlayerInput : MonoBehaviour
             this.gameObject.GetComponent<SpriteRenderer>().color = Color.black;
             shadowTrack.Judge();
         }
+        if(shadowTrack.clickOnHead)
+        {
+            if(Input.GetKeyUp(KeyCode.A))
+            {
+                shadowTrack.ReleaseHold();
+            }
+        }
         if (Input.GetKeyDown(KeyCode.D))
         {
             this.transform.position = shadowPos.position;

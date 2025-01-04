@@ -35,38 +35,86 @@ public class Track : MonoBehaviour
         {
             new NoteInfo(3f),
             new NoteInfo(4f),
-            new NoteInfo(5f, 6f),
-            new NoteInfo(6.5f)
+            new NoteInfo(5f, 8f),
+            new NoteInfo(9f),
+            new NoteInfo(10f, 12f)
         };
     }
 
     public void TrackUpdate()
     {
         SpawnNote();
+        UpdateCurrentNote();
     }
 
+    //maybe need to update later than player input
+    private void UpdateCurrentNote()
+    {
+        //exceed judge time
+        if (currentNoteIndex < m_Notes.Count)
+        {
+            //hold note
+            if(m_Notes[currentNoteIndex].holdEndBeat != -1)
+            {
+                if (LevelManager.Instance.songPosition - ConvertBeatToSec(m_Notes[currentNoteIndex].holdEndBeat) >= 0)
+                {
+                    existed_notes.RemoveAt(0);
+                    clickOnHead = false;
+                    currentNoteIndex++;
+                }
+            }
+            //tap note
+            else if (LevelManager.Instance.songPosition - ConvertBeatToSec(m_Notes[currentNoteIndex].targetBeat) >= 0.2f)
+            {
+                existed_notes.RemoveAt(0);
+                currentNoteIndex++;
+            }
+        }
+    }
+
+    public bool clickOnHead;
     public void Judge()
     {
         float hitTime;
-        //tap note judge
         if (currentNoteIndex < m_Notes.Count && parent.childCount > 0)
         {
             hitTime = Mathf.Abs(LevelManager.Instance.songPosition - ConvertBeatToSec(m_Notes[currentNoteIndex].targetBeat));
             if (hitTime < 0.2f)
             {
-                Destroy(existed_notes[0].gameObject);
-                existed_notes.RemoveAt(0);
-                currentNoteIndex++;
+                //tap note judge
+                if(m_Notes[currentNoteIndex].holdEndBeat == -1)
+                {
+                    Destroy(existed_notes[0].gameObject);
+                    existed_notes.RemoveAt(0);
+                    currentNoteIndex++;
+                }
+                //hold note judge
+                else
+                {
+                    if(existed_notes[0] is HoldNote hold)
+                    {
+                        hold.HeadClick();
+                        clickOnHead = true;
+                        Debug.Log("head");
+                    }
+                }
+
                 if (hitTime <= 0.03f)
                 {
-                    Debug.Log("Perfect");
+                    Debug.Log("Perfect: " + hitTime);
                 }
                 else
                 {
-                    Debug.Log("Not Perfect");
+                    Debug.Log("Not Perfect: " + hitTime);
                 }
             }
         }
+    }
+
+    public void ReleaseHold()
+    {
+        existed_notes[0].GetComponent<HoldNote>().GetBack();
+        clickOnHead = false;
     }
 
     private float ConvertBeatToSec(float beat)
@@ -94,8 +142,8 @@ public class Track : MonoBehaviour
                 {
                     holdNote.GetComponent<HoldNote>().ShowHoldTail();
                     holdingNote = false;
+                    nextNoteIndex++;
                 }
-                nextNoteIndex++;
             }
         }
         else if (nextNoteIndex < m_Notes.Count && m_Notes[nextNoteIndex].targetBeat <= LevelManager.Instance.songPositionInBeats + _beatsShownInAdvance)

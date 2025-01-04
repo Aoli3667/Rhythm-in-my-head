@@ -241,8 +241,8 @@ MonoBehaviour:
   ShadowSpawnPos: {fileID: 455095075}
   JudgePos: {fileID: 871001917}
   RemovePos: {fileID: 1226719111}
-  playerLightPos: {fileID: 962868290}
-  playerShadowPos: {fileID: 2135460512}
+  playerLightPos: {fileID: 2135460512}
+  playerShadowPos: {fileID: 962868290}
   shadowTrack: {fileID: 455095076}
   musicSource: {fileID: 513951774}
   bpm: 120
@@ -993,7 +993,7 @@ Transform:
   m_GameObject: {fileID: 1226719109}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -9, y: 0, z: 0}
+  m_LocalPosition: {x: -9.07, y: 0, z: 0}
   m_LocalScale: {x: 10, y: 0.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -51,6 +51,7 @@ public class TapNote : Note
         else
         {
             transform.position = Vector2.MoveTowards(transform.position, removePos, jdugeSpeed * Time.deltaTime);
+            //得改一下 
             if (Vector2.Distance(transform.position, removePos) < 0.1)
             {
                 Destroy(gameObject);
