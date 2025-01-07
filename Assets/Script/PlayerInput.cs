@@ -31,6 +31,13 @@ public class PlayerInput : MonoBehaviour
             this.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
             lightTrack.Judge();
         }
+        if (lightTrack.clickOnHead)
+        {
+            if (Input.GetKeyUp(KeyCode.D))
+            {
+                shadowTrack.ReleaseHold();
+            }
+        }
     }
 
     void Update()

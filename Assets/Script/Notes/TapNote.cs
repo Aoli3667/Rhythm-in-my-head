@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class TapNote : Note
 {
-
-    public override void Initialize(Transform spawn, Transform judgePos, Transform removePos, float spawnBeatTime, float targetBeat, float secondsPerBeat)
+    public override void Initialize(Transform spawn, Transform judgePos, Transform removePos, float spawnBeatTime, float targetBeat, float secondsPerBeat, AObjectPool pool)
     {
         if (startTime == -1)
         {
@@ -19,6 +18,7 @@ public class TapNote : Note
         base.targetBeat = targetBeat;
         secPerBeat = secondsPerBeat;
         transform.position = spawnPos.position;
+        belonged_pool = pool;
     }
 
     //現在是到達判定線消失 之後可以把remove Pos降低 把判定線放在
@@ -28,10 +28,7 @@ public class TapNote : Note
     }
 
     /// <summary>
-    /// 有點蠢的寫法 現在是每個音符都掛載此腳本 可能導致性能問題 可能還是生成在父物體上然後移動父物體(象卷軸)會好點? (待實驗)
-    /// 另外解法是使用對象池
-    /// 
-    /// 移動的計算也比較多 可以優化
+    /// Move the note
     /// </summary>
     public override void Move()
     {
@@ -54,7 +51,8 @@ public class TapNote : Note
             //得改一下 
             if (Vector2.Distance(transform.position, removePos) < 0.1)
             {
-                Destroy(gameObject);
+                belonged_pool.ReturnToPool(this.gameObject);
+                //Destroy(gameObject);
             }
         }
     }

@@ -10,9 +10,9 @@ public class HoldNote : Note
     private GameObject judgeObj;
     private float endBeat;
 
-    private bool initialized;
+    private bool tailShowed;
 
-    public override void Initialize(Transform spawn, Transform judgePos, Transform removePos, float spawnBeatTime, float targetBeat, float secondsPerBeat)
+    public override void Initialize(Transform spawn, Transform judgePos, Transform removePos, float spawnBeatTime, float targetBeat, float secondsPerBeat, AObjectPool pool)
     {
         if (startTime == -1)
         {
@@ -26,10 +26,12 @@ public class HoldNote : Note
         base.targetBeat = targetBeat;
         secPerBeat = secondsPerBeat;
         transform.position = spawnPos.position;
+        belonged_pool = pool;
     }
 
     public void HoldInitialize(float endBeat, GameObject judgeObject)
     {
+        tailShowed = false;
         this.endBeat = endBeat;
         judgeObj = judgeObject;
     }
@@ -37,6 +39,7 @@ public class HoldNote : Note
     void Update()
     {
         Move();
+        ShowHoldTail();
     }
 
     public void GetBack()
@@ -46,16 +49,20 @@ public class HoldNote : Note
 
     public void HeadClick()
     {
+        //holdHead.transform.SetParent(judgeObj.transform);
         holdHead.transform.SetParent(judgeObj.transform);
         holdHead.transform.localPosition = Vector3.zero;
     }
 
     public void ShowHoldTail()
     {
-        holdBody.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
-        holdTail.SetActive(true);
-        holdTail.transform.position = this.spawnPos.position;
-        Debug.Log("tail");
+        if(!tailShowed && endBeat <= LevelManager.Instance.songPositionInBeats + LevelManager.Instance.beatsShownInAdvance)
+        {
+            holdBody.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+            holdTail.SetActive(true);
+            holdTail.transform.position = this.spawnPos.position;
+            tailShowed = true;
+        }
     }
 
     public override void Move()
@@ -79,8 +86,9 @@ public class HoldNote : Note
             transform.position += (Vector3)(moveDirection * jdugeSpeed * Time.deltaTime);
             if(holdTail.transform.position.x < judgePos.x)
             {
-                Destroy(this.gameObject);
-                Destroy(holdHead);
+                holdHead.transform.SetParent(this.gameObject.transform);
+                holdHead.transform.localPosition = Vector3.zero;
+                belonged_pool.ReturnToPool(this.gameObject);
             }
         }
     }
