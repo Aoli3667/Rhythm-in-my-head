@@ -29,7 +29,7 @@ public class Track : MonoBehaviour
     Coroutine judge_coroutine;
 
 
-    public void Initialize(int beatsShowInAdvance, Transform judgePos, Transform removePos, Transform playerHoldPos)
+    public void Initialize(int beatsShowInAdvance, Transform judgePos, Transform removePos, Transform playerHoldPos, string[] notes_file)
     {
         _beatsShownInAdvance = beatsShowInAdvance;
         _judgePos = judgePos;
@@ -39,16 +39,25 @@ public class Track : MonoBehaviour
         judge_display = gameObject.transform.Find("Judge").Find("Text").GetComponent<TMP_Text>();
 
         notes_parent = this.transform.Find("Notes");
-        m_Notes = new List<NoteInfo>
-        {
-            new NoteInfo(3f),
-            new NoteInfo(4f),
-            new NoteInfo(5f, 8f),
-            new NoteInfo(9f),
-            new NoteInfo(12f, 13f)
-        };
+        TrackNotesConversion(notes_file);
 
         InitPool();
+    }
+
+    private void TrackNotesConversion(string[] list)
+    {
+        foreach (string obj in list)
+        {
+            if (obj[0] != 'h')
+            {
+                m_Notes.Add(new NoteInfo(float.Parse(obj)));
+            }
+            else
+            {
+                string[] hold_note = obj.Substring(1).Split(" ");
+                m_Notes.Add(new NoteInfo(float.Parse(hold_note[0]), float.Parse(hold_note[1])));
+            }
+        }
     }
 
     /// <summary>
@@ -243,7 +252,7 @@ public class Track : MonoBehaviour
         }
     }
 
-    private struct NoteInfo
+    public struct NoteInfo
     {
         public float targetBeat;
         public float holdEndBeat;

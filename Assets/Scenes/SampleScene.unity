@@ -647,6 +647,14 @@ MonoBehaviour:
   playerShadowPos: {fileID: 962868290}
   shadowTrack: {fileID: 455095076}
   lightTrack: {fileID: 1005814226}
+  shadowNotes:
+  - 4
+  - 5
+  - 7
+  lightNotes:
+  - 5.5
+  - h6 8
+  - 9
   musicSource: {fileID: 513951774}
   bpm: 120
   beatsShownInAdvance: 2

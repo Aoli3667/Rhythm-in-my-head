@@ -22,6 +22,8 @@ public class LevelManager : MonoBehaviour
     [Header("Track")]
     [SerializeField] private Track shadowTrack;
     [SerializeField] private Track lightTrack;
+    [SerializeField] private string[] shadowNotes;
+    [SerializeField] private string[] lightNotes;
 
     [Header("Song Info")]
     public AudioSource musicSource;
@@ -43,8 +45,10 @@ public class LevelManager : MonoBehaviour
 
         musicSource.Play();
 
-        shadowTrack.Initialize(beatsShownInAdvance, JudgePos, RemovePos, playerShadowPos);
-        lightTrack.Initialize(beatsShownInAdvance, JudgePos, RemovePos, playerLightPos);
+        shadowTrack.Initialize(beatsShownInAdvance, JudgePos, RemovePos, playerShadowPos, shadowNotes);
+        lightTrack.Initialize(beatsShownInAdvance, JudgePos, RemovePos, playerLightPos, lightNotes);
+        
+        
     }
 
     private void Awake()
